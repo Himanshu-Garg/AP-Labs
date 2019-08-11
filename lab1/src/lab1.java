@@ -4,6 +4,13 @@ import java.lang.*;
 
 public class lab1 {
 
+    public static boolean valid_course (String course) {
+        if (course.equals("CSE") || course.equals("ECE") ||course.equals("CSAM") ||course.equals("CSD") ||course.equals("CSB") ||course.equals("CSSS") ) {
+            return true;
+        }
+        return false;
+    }
+
     public static class student {
         private final int rollno;
         // final - as considering no ambiguity in the data, and
@@ -466,7 +473,7 @@ public class lab1 {
                     }
                 }
                 if(atleast_one_test_given == false) {
-                    System.out.println("NOT eligible for technical round of any company");
+                    System.out.println();
                 }
             }
 
@@ -499,8 +506,14 @@ public class lab1 {
 
             for(int i=0;i<no_of_students;i++) {
                 String[] inp = br.readLine().trim().split("\\s+");
-                float cgpa = Float.parseFloat(inp[0]);
-                app.add_student(cgpa, inp[1]);
+                if(valid_course(inp[1])) {
+                    float cgpa = Float.parseFloat(inp[0]);
+                    app.add_student(cgpa, inp[1]);
+                }
+                else {
+                    System.out.println("Invalid course");
+                }
+
             }
 
             while(true) {
@@ -511,8 +524,17 @@ public class lab1 {
                         System.out.print("Number of eligible courses : ");
                         int no_of_courses = scan.nextInt();
                         List<String> course_criteria = new ArrayList<>();
+                        boolean not_valid = false;
                         for(int j=0;j<no_of_courses;j++) {
                             course_criteria.add(scan.next());
+                            if(!valid_course(course_criteria.get(j))) {
+                                not_valid = true;
+                                break;
+                            }
+                        }
+                        if(not_valid==true) {
+                            System.out.println("Invalid course entered - not registering this company ");
+                            continue;
                         }
                         System.out.print("Number of Required Students : ");
                         int requirement = scan.nextInt();
