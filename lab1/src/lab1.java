@@ -344,7 +344,7 @@ public class lab1 {
 
         private List<Integer> remove_placed_students () {
             List<Integer> placed_students = new ArrayList<>();
-            for(int i=0;i<Students.size();i++) {
+            for(int i=Students.size()-1;i>=0;i--) {
                 if(Students.get(i).placement_status=="Placed") {
                     placed_students.add(Students.get(i).rollno);
                     Students.remove(i);
@@ -368,7 +368,7 @@ public class lab1 {
 
         private List<String> remove_closed_companies () {
             List<String> closed_companies = new ArrayList<>();
-            for(int i=0;i<Companies_left.size();i++) {
+            for(int i=Companies_left.size()-1;i>=0;i--) {
                 if(Companies_left.get(i).application_status=="CLOSED") {
                     closed_companies.add(Companies_left.get(i).name);
                     Companies_left.remove(i);
