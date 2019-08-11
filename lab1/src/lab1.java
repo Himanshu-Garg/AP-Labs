@@ -91,11 +91,11 @@ public class lab1 {
         public static Comparator<student> StuSort = new Comparator<student>() {
             @Override
             public int compare(student s1, student s2) {
-                int score1 = s1.scores.get(0);
-                int score2 = s2.scores.get(0);
+                int score1 = s1.getScores().get(0);
+                int score2 = s2.getScores().get(0);
 
                 if(score1==score2) {
-                    return (int)(s2.cgpa - s1.cgpa);
+                    return (int)(s2.getCgpa() - s1.getCgpa());
                 }
                 return score2-score1;
             }
@@ -217,15 +217,15 @@ public class lab1 {
             System.out.println("Enter Scores for Technical round : ");
             boolean atleast_one_eligible = false;
             Scanner scan = new Scanner(System.in);
-            for(int i=0;i<Students.size();i++) {
-                if(course_criteria.contains(Students.get(i).course)) {
+            for(int i=0;i<getStudents().size();i++) {
+                if(course_criteria.contains(getStudents().get(i).getCourse())) {
                     atleast_one_eligible = true;
-                    System.out.println("Enter score for Roll no. "+Students.get(i).getRollno());
+                    System.out.println("Enter score for Roll no. "+getStudents().get(i).getRollno());
                     int s = scan.nextInt();
-                    Students.get(i).scores.add(s);
+                    getStudents().get(i).scores.add(s);
                 }
                 else {
-                    Students.get(i).scores.add(-1);
+                    getStudents().get(i).scores.add(-1);
                 }
             }
             if(atleast_one_eligible==false) {
@@ -234,48 +234,48 @@ public class lab1 {
         }
 
         public void print_open_companies_name() {
-            for(int i=0;i<Companies_left.size();i++) {
-                System.out.println(Companies_left.get(i).name);
+            for(int i=0;i<getCompanies_left().size();i++) {
+                System.out.println(getCompanies_left().get(i).getName());
             }
         }
 
         private List<student> find_eligible_students(String _company_name) {
 
             int company_index = 0;
-            for (int i=1;i<all_companies_visited.size();i++) {
-                if(all_companies_visited.get(i).equals(_company_name)) {
+            for (int i=1;i<getAll_companies_visited().size();i++) {
+                if(getAll_companies_visited().get(i).equals(_company_name)) {
                     company_index = i;
                     break;
                 }
             }
 
             List<String> courses = new ArrayList<>();
-            for(int i=0;i<Companies_left.size();i++) {
-                if(Companies_left.get(i).name.equals(_company_name)) {
-                    courses = Companies_left.get(i).getCourse_criteria();
+            for(int i=0;i<getCompanies_left().size();i++) {
+                if(getCompanies_left().get(i).getName().equals(_company_name)) {
+                    courses = getCompanies_left().get(i).getCourse_criteria();
                     break;
                 }
             }
 
             List<student> eligible_students = new ArrayList<>();
-            for(int i=0;i<Students.size();i++) {
-                student temp = Students.get(i);
-                if(temp.placement_status=="Not placed" && courses.contains(temp.course) ) {
+            for(int i=0;i<getStudents().size();i++) {
+                student temp = getStudents().get(i);
+                if(temp.getPlacement_status()=="Not placed" && courses.contains(temp.getCourse()) ) {
                     eligible_students.add(temp);
                 }
             }
 
             for (int i=0;i<eligible_students.size();i++) {
-                eligible_students.get(i).scores.set(0, eligible_students.get(i).scores.get(company_index));
+                eligible_students.get(i).scores.set(0, eligible_students.get(i).getScores().get(company_index));
             }
 
             return eligible_students;
         }
 
         private company return_company_by_name(String _company_name) {
-            for (int i=0;i<Companies_left.size();i++) {
-                if(Companies_left.get(i).name.equals(_company_name)) {
-                    return Companies_left.get(i);
+            for (int i=0;i<getCompanies_left().size();i++) {
+                if(getCompanies_left().get(i).getName().equals(_company_name)) {
+                    return getCompanies_left().get(i);
                 }
             }
             return null;
@@ -292,9 +292,10 @@ public class lab1 {
                 return null;
             }
 
-            for(int i=0;i<Companies_left.size();i++) {
-                if(Companies_left.get(i).name.equals(_company_name)) {
-                    Companies_left.get(i).application_status = "CLOSED";
+            for(int i=0;i<getCompanies_left().size();i++) {
+                if(getCompanies_left().get(i).getName().equals(_company_name)) {
+                    Companies_left.get(i).setApplication_status("CLOSED");
+                    break;
                 }
             }
 
@@ -308,11 +309,11 @@ public class lab1 {
 
             if(eligible_students.size()<= requirement) {
                 for(int i=0;i<eligible_students.size();i++) {
-                    for(int j=0;j<Students.size();j++) {
-                        if(Students.get(j).getRollno() == eligible_students.get(i).getRollno()) {
-                            selected_students.add(Students.get(j).getRollno());
-                            Students.get(j).placement_status = "Placed";
-                            Students.get(j).company_placed = _company_name;
+                    for(int j=0;j<getStudents().size();j++) {
+                        if(getStudents().get(j).getRollno() == eligible_students.get(i).getRollno()) {
+                            selected_students.add(getStudents().get(j).getRollno());
+                            Students.get(j).setPlacement_status("Placed");
+                            Students.get(j).setCompany_placed(_company_name);
                             break;
                         }
                     }
@@ -324,12 +325,12 @@ public class lab1 {
                 int accepted = 0;
 
                 for(int i=0;i<eligible_students.size();i++) {
-                    for(int j=0;j<Students.size();j++) {
-                        if(Students.get(j).getRollno() == eligible_students.get(i).getRollno()) {
-                            selected_students.add(Students.get(j).getRollno());
+                    for(int j=0;j<getStudents().size();j++) {
+                        if(getStudents().get(j).getRollno() == eligible_students.get(i).getRollno()) {
+                            selected_students.add(getStudents().get(j).getRollno());
                             accepted++;
-                            Students.get(j).placement_status = "Placed";
-                            Students.get(j).company_placed = _company_name;
+                            Students.get(j).setPlacement_status("Placed");
+                            Students.get(j).setCompany_placed(_company_name);
                             if(accepted==requirement) {
                                 return selected_students;
                             }
@@ -366,9 +367,9 @@ public class lab1 {
 
         private List<Integer> remove_placed_students () {
             List<Integer> placed_students = new ArrayList<>();
-            for(int i=Students.size()-1;i>=0;i--) {
-                if(Students.get(i).placement_status=="Placed") {
-                    placed_students.add(Students.get(i).rollno);
+            for(int i=getStudents().size()-1;i>=0;i--) {
+                if(Students.get(i).getPlacement_status()=="Placed") {
+                    placed_students.add(Students.get(i).getRollno());
                     Students.remove(i);
                 }
             }
@@ -390,9 +391,9 @@ public class lab1 {
 
         private List<String> remove_closed_companies () {
             List<String> closed_companies = new ArrayList<>();
-            for(int i=Companies_left.size()-1;i>=0;i--) {
-                if(Companies_left.get(i).application_status=="CLOSED") {
-                    closed_companies.add(Companies_left.get(i).name);
+            for(int i=getCompanies_left().size()-1;i>=0;i--) {
+                if(Companies_left.get(i).getApplication_status()=="CLOSED") {
+                    closed_companies.add(Companies_left.get(i).getName());
                     Companies_left.remove(i);
                 }
             }
@@ -414,8 +415,8 @@ public class lab1 {
 
         public void no_of_unplaced_students() {
             int count = 0;
-            for(int i=0;i<Students.size();i++) {
-                if(Students.get(i).placement_status=="Not placed") {
+            for(int i=0;i<getStudents().size();i++) {
+                if(getStudents().get(i).getPlacement_status()=="Not placed") {
                     count++;
                 }
             }
@@ -423,9 +424,9 @@ public class lab1 {
         }
 
         public void display_open_companies() {
-            for(int i=0;i<Companies_left.size();i++) {
-                if(Companies_left.get(i).application_status=="OPEN") {
-                    System.out.println(Companies_left.get(i).name);
+            for(int i=0;i<getCompanies_left().size();i++) {
+                if(getCompanies_left().get(i).getApplication_status()=="OPEN") {
+                    System.out.println(getCompanies_left().get(i).getName());
                 }
             }
         }
@@ -441,9 +442,9 @@ public class lab1 {
         }
 
         private student return_student_by_rollno(int _roll_no) {
-            for (int i=0;i<Students.size();i++) {
-                if (Students.get(i).rollno == _roll_no) {
-                    return Students.get(i);
+            for (int i=0;i<getStudents().size();i++) {
+                if (getStudents().get(i).getRollno() == _roll_no) {
+                    return getStudents().get(i);
                 }
             }
             return null;
@@ -466,9 +467,9 @@ public class lab1 {
                 System.out.println("Student not in database ... ");
             }
             else {
-                for(int i=1;i<s.scores.size();i++) {
-                    if(s.scores.get(i)!=-1) {
-                        System.out.println(all_companies_visited.get(i) +" " + s.scores.get(i));
+                for(int i=1;i<s.getScores().size();i++) {
+                    if(s.getScores().get(i)!=-1) {
+                        System.out.println(getAll_companies_visited().get(i) +" " + s.getScores().get(i));
                         atleast_one_test_given = true;
                     }
                 }

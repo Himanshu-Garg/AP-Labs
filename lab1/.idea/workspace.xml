@@ -3,11 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="02e3549e-d58d-416a-86bc-77208fc2224f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/intellij_1/lab1$Application.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/intellij_1/lab1$Application.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/intellij_1/lab1$company.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/intellij_1/lab1$company.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/intellij_1/lab1$student$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/intellij_1/lab1$student$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/intellij_1/lab1$student.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/intellij_1/lab1$student.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/intellij_1/lab1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/intellij_1/lab1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lab1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/lab1.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -74,6 +69,7 @@
       <workItem from="1565522861094" duration="1202000" />
       <workItem from="1565525069541" duration="4963000" />
       <workItem from="1565530053326" duration="847000" />
+      <workItem from="1565530945941" duration="1493000" />
     </task>
     <servers />
   </component>
