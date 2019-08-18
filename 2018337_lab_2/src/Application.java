@@ -156,7 +156,7 @@ public class Application {
         @Override
         public void search(String category, List<item> all_items) {
             for(int i=0;i<all_items.size();i++) {
-                if(all_items.get(i).category.equals(category)) {
+                if(all_items.get(i).getCategory().equals(category)) {
                     System.out.println(all_items.get(i).toString());
                 }
             }
@@ -175,30 +175,30 @@ public class Application {
         }
 
         public void add_item(item i) {
-            merchant_items.add(i);
+            getMerchant_items().add(i);
             System.out.println(i.toString());
         }
 
         public void edit_item(int item_id, float item_price, int item_quantity ) {
             int index = -1;
             for(int i=0;i<getMerchant_items().size();i++) {
-                if(getMerchant_items().get(i).id==item_id) {
+                if(getMerchant_items().get(i).getId()==item_id) {
                     index = i;
                     break;
                 }
             }
             if(index==-1) { System.out.println("Item code NOT found"); }
             else {
-                merchant_items.get(index).setPrice(item_price);
-                merchant_items.get(index).setQuantity(item_quantity);
-                System.out.println(merchant_items.get(index).toString());
+                getMerchant_items().get(index).setPrice(item_price);
+                getMerchant_items().get(index).setQuantity(item_quantity);
+                System.out.println(getMerchant_items().get(index).toString());
             }
         }
 
         public void edit_item(int item_id) {
             int index = -1;
             for(int i=0;i<getMerchant_items().size();i++) {
-                if(getMerchant_items().get(i).id==item_id) {
+                if(getMerchant_items().get(i).getId()==item_id) {
                     index = i;
                     break;
                 }
@@ -211,11 +211,11 @@ public class Application {
 
                 Scanner scan = new Scanner(System.in);
                 int n = scan.nextInt();
-                if(n==1) { merchant_items.get(index).setOffer("Buy one get one free"); }
-                else if(n==2) { merchant_items.get(index).setOffer("25% off"); }
+                if(n==1) { getMerchant_items().get(index).setOffer("Buy one get one free"); }
+                else if(n==2) { getMerchant_items().get(index).setOffer("25% off"); }
                 else { System.out.println("Wrong input entered"); }
 
-                System.out.println(merchant_items.get(index).toString());
+                System.out.println(getMerchant_items().get(index).toString());
             }
         }
 
@@ -316,31 +316,31 @@ public class Application {
         public void print_details() {
             System.out.println(getName() + " " +
                     getAddress() + " " +
-                    orders_placed.size());
+                    getOrders_placed().size());
         }
 
 
         @Override
         public void print_reward() {
-            int total_reward = (int)(orders_placed.size()/5) *10;
+            int total_reward = (int)(getOrders_placed().size()/5) *10;
             System.out.println("Total reward gained = "+total_reward);
-            System.out.println("Reward account balance " + reward_account.balance);
+            System.out.println("Reward account balance " + getReward_account().getBalance());
         }
 
         private float amount_needed_to_buy(item i, int quantity) {
-            if(i.offer.equals("Buy one get one free")) {
+            if(i.getOffer().equals("Buy one get one free")) {
                 if(quantity%2==0) {
-                    return ((float)quantity/2)*i.price;
+                    return ((float)quantity/2)*i.getPrice();
                 }
                 else {
-                    return ((float)((quantity-1)/2)*i.price) + i.price;
+                    return ((float)((quantity-1)/2)*i.getPrice()) + i.getPrice();
                 }
             }
-            else if(i.offer.equals("25% off")) {
-                return (i.price*quantity)*3/4;
+            else if(i.getOffer().equals("25% off")) {
+                return (i.getPrice()*quantity)*3/4;
             }
             else {
-                return i.price*quantity;
+                return i.getPrice()*quantity;
             }
         }
 
@@ -351,36 +351,38 @@ public class Application {
                 System.out.println("quantity <= 0");
                 return false;
             }
-            if(quantity>i.quantity) {
+            if(quantity>i.getQuantity()) {
                 System.out.println("Not enough quantity available");
                 return false;
             }
             else {
                 float amount_needed = amount_needed_to_buy(i,quantity);
-                if(amount_needed>main_account.balance+reward_account.balance) {
+                if(amount_needed>getMain_account().getBalance()+getReward_account().getBalance()) {
                     System.out.println("Not enough balance");
                     return false;
                 }
 
-                if(main_account.balance>= amount_needed) {
-                    main_account.balance -=  amount_needed;
+                if(getMain_account().getBalance()>= amount_needed) {
+                    //main_account.balance -=  amount_needed;
+                    getMain_account().setBalance(getMain_account().getBalance() - amount_needed);
                 }
                 else {
-                    reward_account.balance -= amount_needed-main_account.balance;
-                    main_account.balance = 0;
+                    getReward_account().balance -= amount_needed - getMain_account().getBalance();
+                    getMain_account().setBalance(0);
                 }
-                i.quantity -= quantity;
-                orders_placed.add(new item(i.id, i.name, i.category, i.merch, amount_needed, quantity));
+                //i.quantity -= quantity;
+                i.setQuantity(i.getQuantity() - quantity);
+                getOrders_placed().add(new item(i.getId(), i.getName(), i.getCategory(), i.getMerch(), amount_needed, quantity));
 
-                if(orders_placed.size()%5==0) {
+                if(getOrders_placed().size()%5==0) {
                     give_reward();
                 }
 
                 merchant merch = i.getMerch();
-                float upper_hundred = merch.contribution_to_company - (merch.contribution_to_company%100) + 100;
+                float upper_hundred = merch.getContribution_to_company() - (merch.getContribution_to_company()%100) + 100;
                 //System.out.println("Upper hundred = " + upper_hundred);
                 merch.contribution_to_company += (float)0.005*amount_needed;
-                if(merch.contribution_to_company>= upper_hundred) {
+                if(merch.getContribution_to_company()>= upper_hundred) {
                     merch.give_reward();
                 }
             }
@@ -393,7 +395,7 @@ public class Application {
         public void search(String category, List<item> all_items) {
 
             for(int i=0;i<all_items.size();i++) {
-                if(all_items.get(i).category.equals(category)) {
+                if(all_items.get(i).getCategory().equals(category)) {
                     System.out.println(all_items.get(i).toString());
                 }
             }
@@ -402,8 +404,7 @@ public class Application {
             int i=0;
             // 0 = no error
             // 1 = item_code not found
-            // 2 = quantity error
-            // 3 = less balance
+
 
             Scanner scan = new Scanner(System.in);
 
@@ -413,7 +414,7 @@ public class Application {
             int item_quantity = scan.nextInt();
 
             for(i=0;i<all_items.size();i++) {
-                if(all_items.get(i).id==item_code) {
+                if(all_items.get(i).getId()==item_code) {
                     error_type = 0;
                     break;
                 }
@@ -436,17 +437,17 @@ public class Application {
                 }
                 else if(trans_method==2) {
                     item _item = all_items.get(i);
-                    cart.add(new item(_item.id, _item.name, _item.category, _item.merch, _item.price, item_quantity));
+                    cart.add(new item(_item.getId(), _item.getName(), _item.getCategory(), _item.getMerch(), _item.getPrice(), item_quantity));
                 }
             }
         }
 
         public void check_out_cart(List<item> all_items) {
-            while(cart.size()!=0) {
-                int quantity = cart.get(0).quantity;
+            while(getCart().size()!=0) {
+                int quantity = getCart().get(0).getQuantity();
                 int i=0;
                 for(i=0;i<all_items.size();i++) {
-                    if(all_items.get(i).id==cart.get(0).id) {
+                    if(all_items.get(i).getId()==getCart().get(0).getId()) {
                         break;
                     }
                 }
@@ -454,7 +455,7 @@ public class Application {
                     break;
                 }
                 else {
-                    System.out.println("Id-"+all_items.get(i).id + " successfully bought");
+                    System.out.println("Id-"+all_items.get(i).getId() + " successfully bought");
                     cart.remove(0);
                 }
             }
@@ -468,25 +469,25 @@ public class Application {
 
         public void display_recent_orders() {
             System.out.println("... Latest order on TOP ...");
-            if(orders_placed.size()<=10) {
-                for(int i=orders_placed.size()-1;i>=0;i--) {
+            if(getOrders_placed().size()<=10) {
+                for(int i=getOrders_placed().size()-1;i>=0;i--) {
 
-                    System.out.println("Bought item " + orders_placed.get(i).name +
-                            " quantity: " + orders_placed.get(i).quantity +
-                            " for Rs. " + orders_placed.get(i).price +
-                            " from Merchant " + orders_placed.get(i).merch.name);
+                    System.out.println("Bought item " + getOrders_placed().get(i).getName() +
+                            " quantity: " + getOrders_placed().get(i).getQuantity() +
+                            " for Rs. " + getOrders_placed().get(i).getPrice() +
+                            " from Merchant " + getOrders_placed().get(i).getMerch().getName());
                 }
             }
             else {
                 int done = 0;
-                for(int i=orders_placed.size()-1;i>=0;i--) {
+                for(int i=getOrders_placed().size()-1;i>=0;i--) {
 
-                    System.out.println("Bought item " + orders_placed.get(i).name +
-                            " quantity: " + orders_placed.get(i).quantity +
-                            " for Rs. " + orders_placed.get(i).price +
-                            " from Merchant " + orders_placed.get(i).merch.name);
+                    System.out.println("Bought item " + getOrders_placed().get(i).getName() +
+                            " quantity: " + getOrders_placed().get(i).getQuantity() +
+                            " for Rs. " + getOrders_placed().get(i).getPrice() +
+                            " from Merchant " + getOrders_placed().get(i).getMerch().getName());
                     done++;
-                    if(done==10) {break;}
+                    if(done>=10) {break;}
                 }
             }
         }
@@ -552,17 +553,17 @@ public class Application {
         // functions start from here ...
 
         public void add_customer(String name, String address) {
-            Customers.add(new customer(getCustomers().size()+1, name, address));
+            getCustomers().add(new customer(getCustomers().size()+1, name, address));
         }
         public void add_merchant(String name, String address) {
-            Merchants.add(new merchant(getMerchants().size()+1, name, address));
+            getMerchants().add(new merchant(getMerchants().size()+1, name, address));
         }
 
         private List<String> return_all_categories() {
             List<String> categories = new ArrayList<>();
-            for(int i=0;i<all_items.size();i++) {
-                if(!categories.contains(all_items.get(i).category)) {
-                    categories.add(all_items.get(i).category);
+            for(int i=0;i<getAll_items().size();i++) {
+                if(!categories.contains(getAll_items().get(i).getCategory())) {
+                    categories.add(getAll_items().get(i).getCategory());
                 }
             }
             return categories;
@@ -598,8 +599,8 @@ public class Application {
 
         private float return_account_balance() {
             float balance = 0;
-            for (int i=0;i<Merchants.size();i++) {
-                balance += Merchants.get(i).contribution_to_company*(float)2;
+            for (int i=0;i<getMerchants().size();i++) {
+                balance += getMerchants().get(i).getContribution_to_company()*(float)2;
             }
             return balance;
         }
@@ -613,42 +614,42 @@ public class Application {
                 int query_no = scan.nextInt();
                 if(query_no==1) {
                     System.out.println("Choose merchant");
-                    for(int i =0;i<Merchants.size();i++) {
-                        System.out.println(Merchants.get(i).user_id + " " + Merchants.get(i).name);
+                    for(int i =0;i<getMerchants().size();i++) {
+                        System.out.println(getMerchants().get(i).getUser_id() + " " + getMerchants().get(i).getName());
                     }
                     int merch_id = scan.nextInt();
-                    merchant_query_selector(Merchants.get(merch_id-1));
+                    merchant_query_selector(getMerchants().get(merch_id-1));
                 }
 
                 else if(query_no==2) {
                     System.out.println("Choose customer");
-                    for(int i =0;i<Customers.size();i++) {
-                        System.out.println(Customers.get(i).user_id + " " + Customers.get(i).name);
+                    for(int i =0;i<getCustomers().size();i++) {
+                        System.out.println(getCustomers().get(i).getUser_id() + " " + getCustomers().get(i).getName());
                     }
                     int cust_id = scan.nextInt();
-                    customer_query_selector(Customers.get(cust_id-1));
+                    customer_query_selector(getCustomers().get(cust_id-1));
                 }
 
                 else if(query_no==3) {
                     System.out.println("Merchants account");
-                    for(int i =0;i<Merchants.size();i++) {
-                        System.out.println(Merchants.get(i).user_id + " " + Merchants.get(i).name);
+                    for(int i =0;i<getMerchants().size();i++) {
+                        System.out.println(getMerchants().get(i).getUser_id() + " " + getMerchants().get(i).getName());
                     }
                     System.out.println("");
                     System.out.println("Customers account");
-                    for(int i =0;i<Customers.size();i++) {
-                        System.out.println(Customers.get(i).user_id + " " + Customers.get(i).name);
+                    for(int i =0;i<getCustomers().size();i++) {
+                        System.out.println(getCustomers().get(i).getUser_id() + " " + getCustomers().get(i).getName());
                     }
 
                     System.out.print("Enter (M or C) : ");
                     String type = scan.next();
-                    System.out.print("Enter ID1 : ");
+                    System.out.print("Enter ID : ");
                     int id = scan.nextInt();
                     if(type.equals("M")) {
-                        Merchants.get(id-1).print_details();
+                        getMerchants().get(id-1).print_details();
                     }
                     else if(type.equals("C")) {
-                        Customers.get(id-1).print_details();
+                        getCustomers().get(id-1).print_details();
                     }
                 }
 
@@ -687,7 +688,7 @@ public class Application {
             Scanner scan = new Scanner(System.in);
 
             while(do_exit==false) {
-                System.out.println("Welcome " + selected_customer.name);
+                System.out.println("Welcome " + selected_customer.getName());
                 display_customer_initial_menu();
                 int query_no = scan.nextInt();
 
@@ -697,11 +698,11 @@ public class Application {
                     display_all_categories(categories);
 
                     int category_no = scan.nextInt();
-                    selected_customer.search(categories.get(category_no-1), all_items);
+                    selected_customer.search(categories.get(category_no-1), getAll_items());
                 }
 
                 else if(query_no==2) {
-                    selected_customer.check_out_cart(all_items);
+                    selected_customer.check_out_cart(getAll_items());
                 }
 
                 else if(query_no==3) {
@@ -743,7 +744,7 @@ public class Application {
             Scanner scan = new Scanner(System.in);
 
             while(do_exit==false) {
-                System.out.println("Welcome " + selected_merchant.name);
+                System.out.println("Welcome " + selected_merchant.getName());
                 display_merchant_initial_menu();
                 int query_no = scan.nextInt();
 
@@ -760,11 +761,11 @@ public class Application {
                         System.out.print("item category: ");
                         String categ = scan.next();
 
-                        item i = new item(no_of_registered_items+1, item_name, categ, selected_merchant, item_price, quantity );
+                        item i = new item(getNo_of_registered_items()+1, item_name, categ, selected_merchant, item_price, quantity );
 
                         selected_merchant.add_item(i);
-                        no_of_registered_items++;
-                        all_items.add(i);
+                        setNo_of_registered_items(getNo_of_registered_items()+1);
+                        getAll_items().add(i);
                     }
                     else {
                         System.out.println("Cannot add item (all slots filled)");
@@ -792,7 +793,7 @@ public class Application {
 
                     int category_no = scan.nextInt();
 
-                    selected_merchant.search(categories.get(category_no-1), all_items);
+                    selected_merchant.search(categories.get(category_no-1), getAll_items());
                 }
 
                 else if(query_no==4) {
