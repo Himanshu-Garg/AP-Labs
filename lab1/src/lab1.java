@@ -17,10 +17,10 @@ public class lab1 {
         // data dont have to be changed or corrected in future ...
         private final float cgpa;
         private final String course;
-        private String placement_status = "Not placed";
-        private String company_placed = "";
+        private String placement_status;
+        private String company_placed;
 
-        private List<Integer> scores = new ArrayList<>();
+        private List<Integer> scores;
 
         // getter functions
 
@@ -65,8 +65,11 @@ public class lab1 {
         student (int rollno, float cgpa, String course) {
             this.rollno = rollno;
             this.cgpa = cgpa;
+            this.placement_status = "Not placed";
+            company_placed = "";
             this.course = course;
-            scores.add(0);      // score at index 0 is used during sorting...
+            this.scores = new ArrayList<>();
+            this.scores.add(0);      // score at index 0 is used during sorting...
         }
 
         // for adding marks to the student object
@@ -108,7 +111,7 @@ public class lab1 {
         private final String name;
         private final int no_of_required_students;
         private final List<String> course_criteria;
-        private String application_status = "OPEN";
+        private String application_status;
 
         // getter functions
         public String getName() {
@@ -138,6 +141,7 @@ public class lab1 {
             this.no_of_required_students = no_of_required_students;
 
             this.course_criteria = new ArrayList<>();
+            this.application_status = "OPEN";
 
             for (int i=0;i<no_of_courses;i++) {
                 this.course_criteria.add(course_criteria.get(i));
@@ -158,16 +162,42 @@ public class lab1 {
             System.out.println("Number of Required Students = " + getNo_of_required_students());
             System.out.println("Application Status = " + getApplication_status());
         }
+
+
+        public void display_select_students (List<student> all_students) {
+            if(all_students!=null) {
+                if(all_students.size()==0) {
+                    System.out.println("0 available students");
+                }
+                else {
+                    System.out.println("Roll number of Selected Students : ");
+                    for (int i=0;i<all_students.size();i++) {
+                        if(all_students.get(i).getCompany_placed().equals(getName())) {
+                            System.out.println(all_students.get(i).getRollno());
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
+
+
     }
 
     public static class Application {
-        private List<student> Students = new ArrayList<>();;
-        private List<company> Companies_left = new ArrayList<>();
-        private List<String> all_companies_visited = new ArrayList<>();
+        private List<student> Students;
+        private List<company> Companies_left;
+        private List<String> all_companies_visited;
         private int no_of_students;
 
         Application() {
             no_of_students = 0;
+            this.Students = new ArrayList<>();
+            Companies_left = new ArrayList<>();
+            all_companies_visited = new ArrayList<>();
             all_companies_visited.add("for sorting");       // since 0th index is reserved for sorting
         }
 
