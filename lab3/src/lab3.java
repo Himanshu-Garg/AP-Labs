@@ -32,11 +32,24 @@ public class lab3 {
         }
 
         public void attack(good_people hero) {
-            hero.hp -= 10;
+            Random r = new Random();
+            float attack = -1;
+            float upper_bound = getHp()/(float)4;
+            while (attack<0 || attack>upper_bound ) {
+                attack =  ((float)r.nextGaussian() * upper_bound/2) + upper_bound/2;
+            }
 
+            if(hero.defense_activated==true) {
+                attack -= hero.defense_attribute;
+                hero.defense_activated = false;
+            }
+            if(attack<0) {
+                attack=0;
+            }
 
-
-
+            hero.hp -= attack;
+            System.out.println("The monster attacked and inflicted " +
+                    attack + " damage to you.");
         }
 
         public void revive() {
@@ -382,6 +395,7 @@ public class lab3 {
                     nodes.add(new fiends());
                 }
             }
+
             nodes.add(new lionfang());
         }
 
@@ -455,6 +469,11 @@ public class lab3 {
 
                 if(enemy.hp<=0) {
                     System.out.println("You killed monster");
+                    if(enemy.getLevel()==4) {
+                        System.out.println("CONGRATULATIONS!!!  ---  You killed the BOSS");
+                        // Terminate JVM
+                        System.exit(0);
+                    }
                     System.out.println( enemy.getLevel()*20 +" XP awarded");
                     for(int i=0;i<enemy.getLevel();i++) {
                         avatar.level_up();
@@ -667,20 +686,20 @@ public class lab3 {
 
 
                 }
-                else {
+                else if(current_player.getCurrent_position()<12) {
                     System.out.println("You are at location " +
                             current_player.getCurrent_position()+ " Choose path:");
-                    System.out.println("1) " + (current_player.getCurrent_position()*3)+3);
-                    System.out.println("2) " + (current_player.getCurrent_position()*3)+4);
-                    System.out.println("3) " + (current_player.getCurrent_position()*3)+5);
+                    System.out.println("1) " + (int)( (current_player.getCurrent_position()*(float)3)+3 ));
+                    System.out.println("2) " + (int)((current_player.getCurrent_position()*(float)3)+4));
+                    System.out.println("3) " + (int)((current_player.getCurrent_position()*(float)3)+5));
                     System.out.println("4) Go Back");
                     System.out.println("Enter -1 to exit");
 
                     int n = scan.nextInt();
 
                     if(n==1) {
-                        System.out.println("Moving to location " + (current_player.getCurrent_position()*3)+3);
-                        bad_people monster = maps.get(current_player_index).nodes.get((current_player.getCurrent_position()*3)+3);
+                        System.out.println("Moving to location " + (int)( (current_player.getCurrent_position()*(float)3)+3 ));
+                        bad_people monster = maps.get(current_player_index).nodes.get((int)( (current_player.getCurrent_position()*(float)3)+3 ));
                         System.out.println("Fight Started. You are fighting a " +
                                 "level " + monster.getLevel()  + " Monster.");
 
@@ -688,15 +707,15 @@ public class lab3 {
                         if(ans==true) {
                             // hero killed enemy
                             System.out.println("Fight won proceed to the next location.");
-                            current_player.setCurrent_position((current_player.getCurrent_position()*3)+3);
+                            current_player.setCurrent_position((int)( (current_player.getCurrent_position()*(float)3)+3 ));
                         }
                         else {
                             current_player.setCurrent_position(-1);
                         }
                     }
                     else if(n==2) {
-                        System.out.println("Moving to location " + (current_player.getCurrent_position()*3)+4);
-                        bad_people monster = maps.get(current_player_index).nodes.get((current_player.getCurrent_position()*3)+4);
+                        System.out.println("Moving to location " + (int)( (current_player.getCurrent_position()*(float)3)+4 ));
+                        bad_people monster = maps.get(current_player_index).nodes.get((int)( (current_player.getCurrent_position()*(float)3)+4 ));
                         System.out.println("Fight Started. You are fighting a " +
                                 "level " + monster.getLevel()  + " Monster.");
 
@@ -704,15 +723,15 @@ public class lab3 {
                         if(ans==true) {
                             // hero killed enemy
                             System.out.println("Fight won proceed to the next location.");
-                            current_player.setCurrent_position((current_player.getCurrent_position()*3)+4);
+                            current_player.setCurrent_position((int)( (current_player.getCurrent_position()*(float)3)+4 ));
                         }
                         else {
                             current_player.setCurrent_position(-1);
                         }
                     }
                     else if(n==3) {
-                        System.out.println("Moving to location " + (current_player.getCurrent_position()*3)+5);
-                        bad_people monster = maps.get(current_player_index).nodes.get((current_player.getCurrent_position()*3)+5);
+                        System.out.println("Moving to location " + (int)( (current_player.getCurrent_position()*(float)3)+5 ));
+                        bad_people monster = maps.get(current_player_index).nodes.get((int)( (current_player.getCurrent_position()*(float)3)+5 ));
                         System.out.println("Fight Started. You are fighting a " +
                                 "level " + monster.getLevel()  + " Monster.");
 
@@ -720,15 +739,70 @@ public class lab3 {
                         if(ans==true) {
                             // hero killed enemy
                             System.out.println("Fight won proceed to the next location.");
-                            current_player.setCurrent_position((current_player.getCurrent_position()*3)+5);
+                            current_player.setCurrent_position((int)( (current_player.getCurrent_position()*(float)3)+5 ));
                         }
                         else {
                             current_player.setCurrent_position(-1);
                         }
                     }
                     else if(n==4) {
-                        System.out.println("Moving to location " + ((int)(current_player.getCurrent_position()/3)-1));
-                        bad_people monster = maps.get(current_player_index).nodes.get(((int)(current_player.getCurrent_position()/3)-1));
+                        System.out.println("Moving to location " + (int)( (current_player.getCurrent_position()/(float)3)-1 ));
+                        if((int)( (current_player.getCurrent_position()/(float)3)-1 ) == -1) {
+                            System.out.println("At start position ...");
+                            current_player.setCurrent_position(-1);
+                        }
+                        else {
+                            bad_people monster = maps.get(current_player_index).nodes.get((int)( (current_player.getCurrent_position()/(float)3)-1 ));
+                            System.out.println("Fight Started. You are fighting a " +
+                                    "level " + monster.getLevel()  + " Monster.");
+
+                            boolean ans = current_player.action(monster);
+                            if(ans==true) {
+                                // hero killed enemy
+                                System.out.println("Fight won proceed to the next location.");
+                                current_player.setCurrent_position((int)( (current_player.getCurrent_position()/(float)3)-1 ));
+                            }
+                            else {
+                                current_player.setCurrent_position(-1);
+                            }
+                        }
+
+                    }
+                    else if(n==-1){
+                        System.out.println("Going to main menu ...");
+                        break;
+                    }
+
+                }
+                else {
+                    System.out.println("You are at location " +
+                            current_player.getCurrent_position()+ " Choose path:");
+                    System.out.println("1) for boss");
+                    System.out.println("2) Go back");
+                    System.out.println("Enter -1 to exit");
+
+                    int n = scan.nextInt();
+
+                    if(n==1) {
+                        System.out.println("Moving to location of boss");
+                        bad_people monster = maps.get(current_player_index).nodes.get(39);
+                        System.out.println("Fight Started. You are fighting a " +
+                                "level " + monster.getLevel()  + " Monster.");
+
+                        boolean ans = current_player.action(monster);
+                        if(ans==true) {
+                            // hero killed enemy
+                            System.out.println("Fight won proceeding to start position again");
+                            current_player.setCurrent_position(-1);
+                        }
+                        else {
+                            current_player.setCurrent_position(-1);
+                        }
+                    }
+                    else if(n==2) {
+                        System.out.println("Moving to location " + (int)( (current_player.getCurrent_position()/(float)3)-1 ));
+
+                        bad_people monster = maps.get(current_player_index).nodes.get((int)( (current_player.getCurrent_position()/(float)3)-1 ));
                         System.out.println("Fight Started. You are fighting a " +
                                 "level " + monster.getLevel()  + " Monster.");
 
@@ -736,7 +810,7 @@ public class lab3 {
                         if(ans==true) {
                             // hero killed enemy
                             System.out.println("Fight won proceed to the next location.");
-                            current_player.setCurrent_position(((int)(current_player.getCurrent_position()/3)-1));
+                            current_player.setCurrent_position((int)( (current_player.getCurrent_position()/(float)3)-1 ));
                         }
                         else {
                             current_player.setCurrent_position(-1);
@@ -746,7 +820,6 @@ public class lab3 {
                         System.out.println("Going to main menu ...");
                         break;
                     }
-
                 }
             }
 
