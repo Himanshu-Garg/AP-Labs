@@ -39,21 +39,23 @@ public class lab3 {
                 attack =  ((float)r.nextGaussian() * upper_bound/2) + upper_bound/2;
             }
 
-            if(hero.defense_activated==true) {
-                attack -= hero.defense_attribute;
-                hero.defense_activated = false;
+            if(hero.isDefense_activated()) {
+                attack -= hero.getDefense_attribute();
+                hero.setDefense_activated(false);
             }
             if(attack<0) {
                 attack=0;
             }
 
-            hero.hp -= attack;
+            //hero.hp -= attack;
+            hero.setHp(hero.getHp()-attack);
             System.out.println("The monster attacked and inflicted " +
                     attack + " damage to you.");
         }
 
         public void revive() {
-            this.hp = 50*(level+1);
+            //this.hp = 50*(getLevel()+1);
+            this.setHp(50*(getLevel()+1));
         }
     }
 
@@ -96,9 +98,10 @@ public class lab3 {
 
         private void special_attack(good_people hero) {
             System.out.println("The monster attacked (SPECIAL) and inflicted " +
-                    hero.hp/(float)2 + " damage to you");
+                    hero.getHp()/(float)2 + " damage to you");
 
-            hero.hp = hero.hp/(float)2;
+            //hero.hp = hero.hp/(float)2;
+            hero.setHp(hero.getHp()/(float)2);
         }
 
     }
@@ -115,9 +118,9 @@ public class lab3 {
         private int defense_attribute;
 
         public void refill() {
-            hp = 50*(level+1);
-            moves_to_activate_special = 3;
-            defense_activated = false;
+            setHp(50*(getLevel()+1));
+            setMoves_to_activate_special(3);
+            setDefense_activated(false);
         }
 
 
@@ -130,6 +133,7 @@ public class lab3 {
             this.attack_attribute = a;
             this.defense_attribute = d;
         }
+
 
 
         public boolean isDefense_activated() {
@@ -191,8 +195,10 @@ public class lab3 {
         public void level_up() {
             if(getLevel()!=4) {
                 this.setLevel(this.getLevel()+1);
-                this.attack_attribute +=1;
-                this.defense_attribute += 1;
+                //this.attack_attribute +=1;
+                setAttack_attribute(getAttack_attribute()+1);
+                //this.defense_attribute += 1;
+                setDefense_attribute(getDefense_attribute()+1);
             }
             setHp(50*(getLevel()+1));
         }
@@ -263,7 +269,8 @@ public class lab3 {
 
             System.out.println("You attacked and inflicted " +
                     a + " damage to the monster");
-            enemy.hp -= a;
+            //enemy.hp -= a;
+            enemy.setHp(enemy.getHp()-a);
 
             setMoves_to_activate_special(getMoves_to_activate_special()-1);
 
@@ -275,7 +282,8 @@ public class lab3 {
             if(getMoves_to_activate_special()>0) {
                 float a = ((float)0.05)*enemy.hp;
                 System.out.println(" 5% HP reduced of enemy due to special activated");
-                enemy.hp -= a;
+                //enemy.hp -= a;
+                enemy.setHp(enemy.getHp()-a);
             }
 
             System.out.println("Monster attack will reduced by " + getDefense_attribute() + " in next attack...");
@@ -304,7 +312,8 @@ public class lab3 {
 
             System.out.println("You attacked and inflicted " +
                     a + " damage to the monster");
-            enemy.hp -= a;
+            //enemy.hp -= a;
+            enemy.setHp(enemy.getHp()-a);
 
             setMoves_to_activate_special(getMoves_to_activate_special()-1);
 
@@ -326,7 +335,7 @@ public class lab3 {
             System.out.println("stealing 30% of opponents HP");
             setMoves_to_activate_special(3);
 
-            float a = (float)0.3 * enemy.hp;
+            float a = (float)0.3 * enemy.getHp();
             enemy.setHp(enemy.getHp()-a);
             setHp(getHp()+a);
 
@@ -351,7 +360,8 @@ public class lab3 {
 
             System.out.println("You attacked and inflicted " +
                     a + " damage to the monster");
-            enemy.hp -= a;
+            //enemy.hp -= a;
+            enemy.setHp(enemy.getHp()-a);
 
             setMoves_to_activate_special(getMoves_to_activate_special()-1);
         }
@@ -436,7 +446,7 @@ public class lab3 {
             System.out.println("1) Attack");
             System.out.println("2) Defense");
 
-            if(avatar.moves_to_activate_special<=0) {
+            if(getAvatar().getMoves_to_activate_special()<=0) {
                 System.out.println("3) Special Attack");
             }
         }
@@ -453,46 +463,54 @@ public class lab3 {
 
                 if(move==1){
                     System.out.println("You choose to attack");
-                    avatar.attack(enemy);
-                    System.out.println("Your HP: " + avatar.hp + "/" + 50*(avatar.getLevel()+1) +" | Monsters HP: " + enemy.hp + "/" + 50*(enemy.getLevel()+1));
+                    getAvatar().attack(enemy);
+                    System.out.println("Your HP: " + getAvatar().getHp() + "/" + 50*(getAvatar().getLevel()+1) +" | Monsters HP: " + enemy.getHp() + "/" + 50*(enemy.getLevel()+1));
                 }
                 else if(move==2) {
                     System.out.println("You choose to defend");
-                    avatar.defense(enemy);
-                    System.out.println("Your HP: " + avatar.hp + "/" + 50*(avatar.getLevel()+1) + " | Monsters HP: " + enemy.hp + "/" + 50*(enemy.getLevel()+1));
+                    getAvatar().defense(enemy);
+                    System.out.println("Your HP: " + getAvatar().getHp() + "/" + 50*(getAvatar().getLevel()+1) + " | Monsters HP: " + enemy.getHp() + "/" + 50*(enemy.getLevel()+1));
+                }
+                else if(move==3 && getAvatar().getMoves_to_activate_special()>0) {
+                    System.out.println("Special move not allowed...");
+                    continue;
                 }
                 else if(move==3) {
                     System.out.println("Special power activated");
-                    avatar.special_power(enemy);
-                    System.out.println("Your HP: " + avatar.hp + "/" + 50*(avatar.getLevel()+1) + " | Monsters HP: " + enemy.hp + "/" + 50*(enemy.getLevel()+1));
+                    getAvatar().special_power(enemy);
+                    System.out.println("Your HP: " + getAvatar().getHp() + "/" + 50*(getAvatar().getLevel()+1) + " | Monsters HP: " + enemy.getHp() + "/" + 50*(enemy.getLevel()+1));
+                }
+                else {
+                    System.out.println("Invalid query");
                 }
 
-                if(enemy.hp<=0) {
+                if(enemy.getHp()<=0) {
                     System.out.println("You killed monster");
                     if(enemy.getLevel()==4) {
                         System.out.println("CONGRATULATIONS!!!  ---  You killed the BOSS");
+                        System.out.println("Exiting... ");
                         // Terminate JVM
                         System.exit(0);
                     }
                     System.out.println( enemy.getLevel()*20 +" XP awarded");
                     for(int i=0;i<enemy.getLevel();i++) {
-                        avatar.level_up();
+                        getAvatar().level_up();
                     }
                     enemy.revive();
-                    avatar.refill();
-                    System.out.println("Level UP: new level = " + avatar.getLevel());
+                    getAvatar().refill();
+                    System.out.println("Level UP: new level = " + getAvatar().getLevel());
                     return true;
                 }
 
                 System.out.println("Monster attack !!!");
-                enemy.attack(avatar);
-                System.out.println("Your HP: " + avatar.hp + "/" + 50*(avatar.getLevel()+1)  + " | Monsters HP: " + enemy.hp + "/" + 50*(enemy.getLevel()+1));
+                enemy.attack(getAvatar());
+                System.out.println("Your HP: " + getAvatar().getHp() + "/" + 50*(getAvatar().getLevel()+1)  + " | Monsters HP: " + enemy.getHp() + "/" + 50*(enemy.getLevel()+1));
 
-                if(avatar.hp<=0) {
+                if(getAvatar().getHp()<=0) {
                     System.out.println("Monster killed you ...");
                     System.out.println("Going back to start position");
                     enemy.revive();
-                    avatar.refill();
+                    getAvatar().refill();
                     return false;
                 }
             }
@@ -570,8 +588,8 @@ public class lab3 {
             System.out.print("Enter Username : ");
             String name = scan.next();
 
-            for(int i=0;i<players.size();i++) {
-                if(players.get(i).getUsername().equals(name)) {
+            for(int i=0;i<getPlayers().size();i++) {
+                if(getPlayers().get(i).getUsername().equals(name)) {
                     System.out.println("User Found... logging in ");
                     return i;
                 }
@@ -612,7 +630,7 @@ public class lab3 {
         }
 
         private void hero_location_menu(int current_player_index) {
-            hero current_player = players.get(current_player_index);
+            hero current_player = getPlayers().get(current_player_index);
             System.out.println("Welcome " + current_player.getUsername());
             Scanner scan = new Scanner(System.in);
 
@@ -630,7 +648,7 @@ public class lab3 {
 
                     if(n==1) {
                         System.out.println("Moving to location 0");
-                        bad_people monster = maps.get(current_player_index).nodes.get(0);
+                        bad_people monster = getMaps().get(current_player_index).getNodes().get(0);
                         System.out.println("Fight Started. You are fighting a " +
                                 "level " + monster.getLevel()  + " Monster.");
 
@@ -646,7 +664,7 @@ public class lab3 {
                     }
                     else if(n==2) {
                         System.out.println("Moving to location 1");
-                        bad_people monster = maps.get(current_player_index).nodes.get(1);
+                        bad_people monster = getMaps().get(current_player_index).getNodes().get(1);
                         System.out.println("Fight Started. You are fighting a " +
                                 "level " + monster.getLevel()  + " Monster.");
 
@@ -663,7 +681,7 @@ public class lab3 {
                     }
                     else if(n==3) {
                         System.out.println("Moving to location 2");
-                        bad_people monster = maps.get(current_player_index).nodes.get(2);
+                        bad_people monster = getMaps().get(current_player_index).getNodes().get(2);
                         System.out.println("Fight Started. You are fighting a " +
                                 "level " + monster.getLevel()  + " Monster.");
 
@@ -682,6 +700,9 @@ public class lab3 {
                         System.out.println("Going to main menu ...");
                         break;
                     }
+                    else {
+                        System.out.println("Invalid input...");
+                    }
 
 
 
@@ -699,7 +720,7 @@ public class lab3 {
 
                     if(n==1) {
                         System.out.println("Moving to location " + (int)( (current_player.getCurrent_position()*(float)3)+3 ));
-                        bad_people monster = maps.get(current_player_index).nodes.get((int)( (current_player.getCurrent_position()*(float)3)+3 ));
+                        bad_people monster = getMaps().get(current_player_index).getNodes().get((int)( (current_player.getCurrent_position()*(float)3)+3 ));
                         System.out.println("Fight Started. You are fighting a " +
                                 "level " + monster.getLevel()  + " Monster.");
 
@@ -715,7 +736,7 @@ public class lab3 {
                     }
                     else if(n==2) {
                         System.out.println("Moving to location " + (int)( (current_player.getCurrent_position()*(float)3)+4 ));
-                        bad_people monster = maps.get(current_player_index).nodes.get((int)( (current_player.getCurrent_position()*(float)3)+4 ));
+                        bad_people monster = getMaps().get(current_player_index).getNodes().get((int)( (current_player.getCurrent_position()*(float)3)+4 ));
                         System.out.println("Fight Started. You are fighting a " +
                                 "level " + monster.getLevel()  + " Monster.");
 
@@ -731,7 +752,7 @@ public class lab3 {
                     }
                     else if(n==3) {
                         System.out.println("Moving to location " + (int)( (current_player.getCurrent_position()*(float)3)+5 ));
-                        bad_people monster = maps.get(current_player_index).nodes.get((int)( (current_player.getCurrent_position()*(float)3)+5 ));
+                        bad_people monster = getMaps().get(current_player_index).getNodes().get((int)( (current_player.getCurrent_position()*(float)3)+5 ));
                         System.out.println("Fight Started. You are fighting a " +
                                 "level " + monster.getLevel()  + " Monster.");
 
@@ -746,13 +767,13 @@ public class lab3 {
                         }
                     }
                     else if(n==4) {
-                        System.out.println("Moving to location " + (int)( (current_player.getCurrent_position()/(float)3)-1 ));
-                        if((int)( (current_player.getCurrent_position()/(float)3)-1 ) == -1) {
-                            System.out.println("At start position ...");
+                        if(current_player.getCurrent_position()<3) {
+                            System.out.println("Moving to starting location");
                             current_player.setCurrent_position(-1);
                         }
                         else {
-                            bad_people monster = maps.get(current_player_index).nodes.get((int)( (current_player.getCurrent_position()/(float)3)-1 ));
+                            System.out.println("Moving to location " + (int)( (current_player.getCurrent_position()/(float)3)-1 ));
+                            bad_people monster = getMaps().get(current_player_index).getNodes().get((int)( (current_player.getCurrent_position()/(float)3)-1 ));
                             System.out.println("Fight Started. You are fighting a " +
                                     "level " + monster.getLevel()  + " Monster.");
 
@@ -772,6 +793,9 @@ public class lab3 {
                         System.out.println("Going to main menu ...");
                         break;
                     }
+                    else {
+                        System.out.println("Invalid input...");
+                    }
 
                 }
                 else {
@@ -785,7 +809,7 @@ public class lab3 {
 
                     if(n==1) {
                         System.out.println("Moving to location of boss");
-                        bad_people monster = maps.get(current_player_index).nodes.get(39);
+                        bad_people monster = getMaps().get(current_player_index).getNodes().get(39);
                         System.out.println("Fight Started. You are fighting a " +
                                 "level " + monster.getLevel()  + " Monster.");
 
@@ -802,7 +826,7 @@ public class lab3 {
                     else if(n==2) {
                         System.out.println("Moving to location " + (int)( (current_player.getCurrent_position()/(float)3)-1 ));
 
-                        bad_people monster = maps.get(current_player_index).nodes.get((int)( (current_player.getCurrent_position()/(float)3)-1 ));
+                        bad_people monster = getMaps().get(current_player_index).getNodes().get((int)( (current_player.getCurrent_position()/(float)3)-1 ));
                         System.out.println("Fight Started. You are fighting a " +
                                 "level " + monster.getLevel()  + " Monster.");
 
@@ -820,6 +844,9 @@ public class lab3 {
                         System.out.println("Going to main menu ...");
                         break;
                     }
+                    else {
+                        System.out.println("Invalid input...");
+                    }
                 }
             }
 
@@ -829,21 +856,6 @@ public class lab3 {
     public static void main(String[] args ) {
         game g = new game();
         g.main_menu();
-
-
-
-
     }
-
-
-
-
-
-
-
-
-
-
-
 
 }

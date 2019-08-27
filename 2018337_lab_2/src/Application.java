@@ -618,6 +618,7 @@ public class Application {
                         System.out.println(getMerchants().get(i).getUser_id() + " " + getMerchants().get(i).getName());
                     }
                     int merch_id = scan.nextInt();
+                    website_user selected_user = getMerchants().get(merch_id-1);
                     merchant_query_selector(getMerchants().get(merch_id-1));
                 }
 
@@ -627,6 +628,7 @@ public class Application {
                         System.out.println(getCustomers().get(i).getUser_id() + " " + getCustomers().get(i).getName());
                     }
                     int cust_id = scan.nextInt();
+                    website_user selected_user = getCustomers().get(cust_id-1);
                     customer_query_selector(getCustomers().get(cust_id-1));
                 }
 
@@ -666,7 +668,6 @@ public class Application {
                 }
             }
 
-
         }
 
 
@@ -686,7 +687,6 @@ public class Application {
         private void customer_query_selector(customer selected_customer) {
             boolean do_exit = false;
             Scanner scan = new Scanner(System.in);
-
             while(do_exit==false) {
                 System.out.println("Welcome " + selected_customer.getName());
                 display_customer_initial_menu();
