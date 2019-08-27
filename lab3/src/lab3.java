@@ -547,9 +547,9 @@ public class lab3 {
                     level = 3;
                 }
 
-                edges.add(new Edge(i,(i*3)+1, level-real_nodes.get(i*3).getLevel()+3) );
-                edges.add(new Edge(i,(i*3)+2, level-real_nodes.get((i*3)+1).getLevel()+3) );
-                edges.add(new Edge(i,(i*3)+3, level-real_nodes.get((i*3)+2).getLevel()+3) );
+                edges.add(new Edge(i,(i*3)+1, real_nodes.get(i*3).getLevel()-level+3) );
+                edges.add(new Edge(i,(i*3)+2, real_nodes.get((i*3)+1).getLevel()-level+3) );
+                edges.add(new Edge(i,(i*3)+3, real_nodes.get((i*3)+2).getLevel()-level+3) );
             }
 
             for(int i=13;i<=40;i++) {
