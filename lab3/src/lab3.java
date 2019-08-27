@@ -407,11 +407,172 @@ public class lab3 {
             }
 
             nodes.add(new lionfang());
+
+            System.out.println("------------------------------------------------------------------");
+            System.out.print(" Best path(-1=start | 39=boss) : ");
+            print_hint(nodes);
+            System.out.println("------------------------------------------------------------------");
         }
 
         public List<bad_people> getNodes() {
             return nodes;
         }
+
+
+        // for Bonus ......................
+
+        // Data structure to store graph edges
+        class Edge
+        {
+            int source, dest, weight;
+
+            public Edge(int source, int dest, int weight) {
+                this.source = source;
+                this.dest = dest;
+                this.weight = weight;
+            }
+        }
+        // Data structure to store heap nodes
+        class Node
+        {
+            int vertex, weight;
+
+            public Node(int vertex, int weight) {
+                this.vertex = vertex;
+                this.weight = weight;
+            }
+        }
+        class Graph
+        {
+            // A List of Lists to represent an adjacency list
+            List<List<Edge>> adjList = null;
+
+            // Constructor
+            Graph(List<Edge> edges, int N)
+            {
+                adjList = new ArrayList<>(N);
+
+                for (int i = 0; i < N; i++) {
+                    adjList.add(i, new ArrayList<>());
+                }
+
+                // add edges to the undirected graph
+                for (Edge edge: edges) {
+                    adjList.get(edge.source).add(edge);
+                }
+            }
+        }
+        private void printRoute(int prev[], int i)
+        {
+            if (i < 0)
+                return;
+
+            printRoute(prev, prev[i]);
+            System.out.print(i-1 + " ");
+        }
+
+        // Run Dijkstra's algorithm on given graph
+        private void shortestPath(Graph graph, int source, int N)
+        {
+            // create min heap and push source node having distance 0
+            PriorityQueue<Node> minHeap = new PriorityQueue<>(
+                    (lhs, rhs) -> lhs.weight - rhs.weight);
+
+            minHeap.add(new Node(source, 0));
+
+            // set infinite distance from source to v initially
+            List<Integer> dist = new ArrayList<>(
+                    Collections.nCopies(N, Integer.MAX_VALUE));
+
+            // distance from source to itself is zero
+            dist.set(source, 0);
+
+            // boolean array to track vertices for which minimum
+            // cost is already found
+            boolean[] done = new boolean[N];
+            done[0] = true;
+
+            // stores predecessor of a vertex (to print path)
+            int prev[] = new int[N];
+            prev[0] = -1;
+
+            // run till minHeap is not empty
+            while (!minHeap.isEmpty())
+            {
+                // Remove and return best vertex
+                Node node = minHeap.poll();
+
+                // get vertex number
+                int u = node.vertex;
+
+                // do for each neighbor v of u
+                for (Edge edge: graph.adjList.get(u))
+                {
+                    int v = edge.dest;
+                    int weight = edge.weight;
+
+                    // Relaxation step
+                    if (!done[v] && (dist.get(u) + weight) < dist.get(v))
+                    {
+                        dist.set(v, dist.get(u) + weight);
+                        prev[v] = u;
+                        minHeap.add(new Node(v, dist.get(v)));
+                    }
+                }
+
+                // marked vertex u as done so it will not get picked up again
+                done[u] = true;
+            }
+
+
+            System.out.print("Best path : ");
+            printRoute(prev, N-1);
+            System.out.println("");
+
+        }
+
+        private void print_hint(List<bad_people> real_nodes) {
+            List<Edge> edges = new ArrayList<>();
+
+            for (int i=0;i<=12;i++) {
+                int level = 0;
+
+                if(i==0) {
+                    level = 1;
+                }
+                else if(i<=3) {
+                    level = 2;
+                }
+                else {
+                    level = 3;
+                }
+
+                edges.add(new Edge(i,(i*3)+1, level-real_nodes.get(i*3).getLevel()+3) );
+                edges.add(new Edge(i,(i*3)+2, level-real_nodes.get((i*3)+1).getLevel()+3) );
+                edges.add(new Edge(i,(i*3)+3, level-real_nodes.get((i*3)+2).getLevel()+3) );
+            }
+
+            for(int i=13;i<=40;i++) {
+                edges.add(new Edge(i,40,1) );
+            }
+            final int N = 41;
+            Graph graph = new Graph(edges, N);
+            shortestPath(graph, 0, N);
+        }
+
+
+
+        // bonus ends here .....................
+
+
+
+
+
+
+
+
+
+
     }
 
     public static class hero {
