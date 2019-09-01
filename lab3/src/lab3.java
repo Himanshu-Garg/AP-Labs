@@ -615,7 +615,6 @@ public class lab3 {
         public boolean action(bad_people enemy) {
             // true -> hero killed enemy
             // false -> enemy killed hero
-
             Scanner scan = new Scanner(System.in);
 
             while(true) {
@@ -662,11 +661,9 @@ public class lab3 {
                     System.out.println("Level UP: new level = " + getAvatar().getLevel());
                     return true;
                 }
-
                 System.out.println("Monster attack !!!");
                 enemy.attack(getAvatar());
                 System.out.println("Your HP: " + getAvatar().getHp() + "/" + 50*(getAvatar().getLevel()+1)  + " | Monsters HP: " + enemy.getHp() + "/" + 50*(enemy.getLevel()+1));
-
                 if(getAvatar().getHp()<=0) {
                     System.out.println("Monster killed you ...");
                     System.out.println("Going back to start position");
@@ -675,9 +672,7 @@ public class lab3 {
                     return false;
                 }
             }
-
         }
-
     }
 
     public static class game {
@@ -706,11 +701,21 @@ public class lab3 {
         }
 
         private void new_user() {
-            Scanner scan = new Scanner(System.in);
-            System.out.print("Enter Username : ");
-            String name = scan.next();
-            String hero_type = "";
+            Scanner scan = new Scanner(System.in); String name = "";
+            while(true) {
+                System.out.print("Enter Username : ");
+                name = scan.next();
+                boolean valid_name = true;
 
+                for(int i=0;i<getPlayers().size();i++) {
+                    if(getPlayers().get(i).getUsername().equals(name)) {
+                        System.out.println("User already exist ... PLS enter another name");
+                        valid_name = false; break;
+                    }
+                }
+                if(valid_name) {break;}
+            }
+            String hero_type = "";
             System.out.println("Choose a hero");
             System.out.println("1) Warrior");
             System.out.println("2) Thief");
@@ -735,14 +740,11 @@ public class lab3 {
                 players.add(new hero(name, new healer()));
                 hero_type = "healer";
             }
-
             maps.add(new game_map());
             System.out.println("User Creation done. Username:" + name +
                     ". Hero type: " + hero_type +
                     ". Log in to play the game . Exiting");
         }
-
-
 
         private int existing_user() {
             Scanner scan = new Scanner(System.in);
@@ -786,10 +788,8 @@ public class lab3 {
                     System.out.println("Exiting ...");
                     break;
                 }
-
             }
         }
-
         private void hero_location_menu(int current_player_index) {
             hero current_player = getPlayers().get(current_player_index);
             System.out.println("Welcome " + current_player.getUsername());

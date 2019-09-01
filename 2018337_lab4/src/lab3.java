@@ -1023,8 +1023,23 @@ public class lab3 {
 
         private void new_user() {
             Scanner scan = new Scanner(System.in);
-            System.out.print("Enter Username : ");
-            String name = scan.next();
+            String name = "";
+
+            while(true) {
+                System.out.print("Enter Username : ");
+                name = scan.next();
+                boolean valid_name = true;
+
+                for(int i=0;i<getPlayers().size();i++) {
+                    if(getPlayers().get(i).getUsername().equals(name)) {
+                        System.out.println("User already exist ... PLS enter another name");
+                        valid_name = false;
+                        break;
+                    }
+                }
+                if(valid_name) {break;}
+            }
+
             String hero_type = "";
 
             System.out.println("Choose a hero");
