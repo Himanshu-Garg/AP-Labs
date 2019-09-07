@@ -6,9 +6,9 @@ import java.util.List;
 
 public class lab3 {
 
-    public static class bad_people {
+    public abstract static class bad_people {
         private float hp;
-        private int level;
+        private final int level;
 
         public bad_people(float hp, int level) {
             this.hp = hp;
@@ -27,9 +27,6 @@ public class lab3 {
             return level;
         }
 
-        public void setLevel(int level) {
-            this.level = level;
-        }
 
         public void attack(good_people hero) {
             Random r = new Random();
@@ -100,7 +97,6 @@ public class lab3 {
             System.out.println("The monster attacked (SPECIAL) and inflicted " +
                     hero.getHp()/(float)2 + " damage to you");
 
-            //hero.hp = hero.hp/(float)2;
             hero.setHp(hero.getHp()/(float)2);
         }
 
