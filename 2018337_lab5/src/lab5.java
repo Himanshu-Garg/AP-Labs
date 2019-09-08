@@ -242,18 +242,13 @@ public class lab5 {
     //creating computer
 
     public static class computer {
-        private final Random r;
+        private final dice d;
         computer() {
-            r = new Random();
+            d = new dice();
         }
 
-        public Random getR() {
-            return r;
-        }
-
-        private int roll_dice(user u) {
-            u.setTotal_moves(u.getTotal_moves()+1);
-            return getR().nextInt(6) +1;
+        public dice getD() {
+            return d;
         }
 
         private void shake_tile(tile t, int tile_no) throws SnakeBiteException, VultureBiteException, CricketBiteException, TrampolineException, Exception {
@@ -296,14 +291,14 @@ public class lab5 {
             int value_on_dice;
 
             while(true) {
-                value_on_dice = roll_dice(u);
+                value_on_dice = getD().roll_dice(u);
 
                 if(u.getCurrent_position()==1) {
                     try {
                         display_start_roll(u, value_on_dice);
 
                         // no error => got 6
-                        value_on_dice = roll_dice(u);
+                        value_on_dice = getD().roll_dice(u);
                         display_roll(u, value_on_dice);
 
                         tile t = u.getTrack().getTiles().get(u.getCurrent_position()-1);
@@ -408,6 +403,23 @@ public class lab5 {
                 }
             }
         }
+    }
+
+    public static class dice {
+        private final Random r;
+        dice() {
+            r = new Random();
+        }
+
+        public Random getR() {
+            return r;
+        }
+
+        public int roll_dice(user u) {
+            u.setTotal_moves(u.getTotal_moves()+1);
+            return getR().nextInt(6) +1;
+        }
+
     }
 
 
