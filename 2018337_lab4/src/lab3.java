@@ -129,6 +129,18 @@ public class lab3 {
             System.out.println("Attack of sidekick : " + attack_attribute);
         }
 
+        public boolean equals(Object o) {
+            if(o==null) {return false;}
+            if(o instanceof sidekick){
+                sidekick oo = (sidekick)o;
+                if(oo.xp==xp && oo.hp==hp && oo.attack_attribute==attack_attribute) {
+                    return true;
+                }
+                else {return false;}
+            }
+            return false;
+        }
+
         public String getType() {
             return type;
         }
