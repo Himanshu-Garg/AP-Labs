@@ -8,14 +8,14 @@ public class lab5 {
 
     // Declaring EXCEPTIONS
 
-    public static abstract class negative_exception extends Exception implements Serializable {
+    public static abstract class negative_exception extends RuntimeException implements Serializable {
         negative_exception(String sound, String type, int no_of_tiles) {
             super(sound + "...! I am a " + type +
                     ", you go back " + -1*no_of_tiles + " tiles");
         }
     }
 
-    public static class NotOutofCage extends Exception implements Serializable {
+    public static class NotOutofCage extends RuntimeException implements Serializable {
         NotOutofCage() {
             super("OOPs you need 6 to start... still in cage");
         }
@@ -39,14 +39,14 @@ public class lab5 {
         }
     }
 
-    public static class TrampolineException extends Exception implements Serializable{
+    public static class TrampolineException extends RuntimeException implements Serializable{
         TrampolineException(int no_of_tiles) {
             super("Ping Pong! I am a Trampoline, you advance " +
                     no_of_tiles + " tiles");
         }
     }
 
-    public static class GameWinnerException extends Exception implements Serializable{
+    public static class GameWinnerException extends RuntimeException implements Serializable{
         GameWinnerException() {
             super("Game won...");
         }
@@ -71,7 +71,7 @@ public class lab5 {
             return type;
         }
 
-        public abstract void shake() throws Exception;
+        public abstract void shake() throws RuntimeException;
     }
 
     public static abstract class sound_tile extends tile {
@@ -88,7 +88,6 @@ public class lab5 {
     }
 
     public static class snake extends sound_tile {
-
 
         snake(int moves_allowed) {
             super(-1*moves_allowed,"Snake","Hiss");
@@ -149,13 +148,16 @@ public class lab5 {
 
     public static class race_track implements Serializable {
         private final int total_tiles;
-        private final List<tile> tiles;
+        private  final List<tile> tiles;
+
+        private static final long serialVersionUID = 1L;
 
         // tiles which will be used in the race_track
         private final snake snake_tile;
         private final vulture vulture_tile;
         private final trampoline trampoline_tile;
         private final cricket cricket_tile;
+        private static transient white w;
 
         private int no_of_snake_tiles;
         private int no_of_cricket_tiles;
@@ -182,7 +184,7 @@ public class lab5 {
             randomInteger = r.nextInt(10);
             cricket_tile = new cricket(randomInteger+1);
 
-            white w = new white();
+            this.w = new white();
 
             // adding tiles to  "tiles array-list"
             this.tiles = new ArrayList<>();
@@ -246,7 +248,8 @@ public class lab5 {
     //creating computer
 
     public static class computer {
-        private final dice d;
+        private static dice d;
+
         computer() {
             d = new dice();
         }
@@ -255,12 +258,12 @@ public class lab5 {
             return d;
         }
 
-        private void shake_tile(tile t, int tile_no) throws SnakeBiteException, VultureBiteException, CricketBiteException, TrampolineException, Exception {
+        private void shake_tile(tile t, int tile_no) throws SnakeBiteException, VultureBiteException, CricketBiteException, TrampolineException {
             System.out.println("Trying to shake the Tile-" + tile_no);
             t.shake();
         }
 
-        private void display_start_roll(user u, int value_on_dice) throws NotOutofCage {
+        private void display_start_roll(user u, int value_on_dice)  throws NotOutofCage {
             System.out.print("[Roll-" + u.getTotal_moves() + "]: " +
                     u.getName() + " rolled " + value_on_dice +
                     " at Tile-" + u.getCurrent_position() + ", ");
@@ -273,6 +276,10 @@ public class lab5 {
             }
         }
 
+
+        public void gameWon() throws GameWinnerException {
+            throw new GameWinnerException();
+        }
 
 
         private int display_roll(user u, int value_on_dice) {
@@ -291,6 +298,7 @@ public class lab5 {
             System.out.println(u.getCurrent_position());
             return to_return;
         }
+
 
         public void play(user u) throws GameWinnerException {
             int value_on_dice;
@@ -359,7 +367,8 @@ public class lab5 {
 
                 if(value_on_dice+u.getCurrent_position()==u.getTrack().getTotal_tiles()) {
                     display_roll(u, value_on_dice);
-                    throw new GameWinnerException();
+                    // won the game
+                    gameWon();
                 }
 
                 // normal rolling .... in intermediate steps...
@@ -501,6 +510,8 @@ public class lab5 {
         private final String name;
         private final race_track track;
         private int current_position;
+
+        private static final long serialVersionUID = 2L;
 
         private int total_moves;
         private int last_saved;     // 0 - not saved once
@@ -666,7 +677,6 @@ public class lab5 {
 
             u.Game_start(c);
         }
-
 
         private void existing_user_login() {
             Scanner scan = new Scanner(System.in);
