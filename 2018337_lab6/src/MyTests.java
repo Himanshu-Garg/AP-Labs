@@ -1,7 +1,10 @@
 import static org.junit.Assert.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import com.sun.source.tree.AssertTree;
+import org.junit.*;
+import java.io.*;
+
+import java.io.IOException;
 
 
 public class MyTests {
@@ -116,6 +119,50 @@ public class MyTests {
             lab5.computer c = new lab5.computer();
             c.gameWon();
         }
+    }
+
+    public static class testSerialization {
+
+        public static lab5.user u;
+        public static lab5.computer c;
+
+        @Before
+        public void make_user() {
+            u = new lab5.user("demo_user", new lab5.race_track(100));
+            u.setTrampoline(5);
+            u.setCricket_bites(6);
+            u.setSnake_bites(0);
+            u.setVulture_bites(10);
+            u.setCurrent_position(25);
+            u.setTotal_moves(28);
+
+            c = new lab5.computer();
+        }
+
+        @Test(timeout = 3000)
+        public void testSerialize() throws IOException {
+            //check that serialization NOT causing any error (i.e. file creating properly)
+            c.serialize(u);
+        }
+
+        @Test(timeout = 6000)
+        public void testProperSerialization() throws IOException {
+            //check that serialization and deserialized file is same as "u"...
+
+            c.serialize(u);
+            lab5.user extracted_user = c.deserialize("demo_user");
+            Assert.assertTrue("Deserialized not instance of user",extracted_user instanceof lab5.user);
+            Assert.assertEquals("Both sent and extracted NOT equals",extracted_user, u);
+        }
+
+        @After
+        public void del_file() {
+            File file = new File("saved_objects/demo_user.txt");
+            file.delete();
+        }
+
+
+
     }
 
 }

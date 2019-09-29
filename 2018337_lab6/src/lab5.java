@@ -164,6 +164,15 @@ public class lab5 {
         private int no_of_vulture_tiles;
         private int no_of_trampoline_tiles;
 
+        @Override
+        public String toString() {
+            return "race_track{" +
+                    "no_of_snake_tiles=" + no_of_snake_tiles +
+                    ", no_of_cricket_tiles=" + no_of_cricket_tiles +
+                    ", no_of_vulture_tiles=" + no_of_vulture_tiles +
+                    ", no_of_trampoline_tiles=" + no_of_trampoline_tiles +
+                    '}';
+        }
 
         race_track(int total_tiles) {
             this.total_tiles = total_tiles;
@@ -474,13 +483,27 @@ public class lab5 {
 
         }
 
-        private static void serialize(user u) throws IOException {
+        public static void serialize(user u) throws IOException {
             ObjectOutputStream out = null;
             try {
                 out = new ObjectOutputStream(new FileOutputStream("./saved_objects/" + u.getName() + ".txt"));
                 out.writeObject(u);
             }
+
             finally { out.close(); }
+        }
+
+        public static user deserialize(String name) throws IOException{
+            ObjectInputStream in = null;
+            user u = null;
+            try {
+                in = new ObjectInputStream(new FileInputStream("./saved_objects/" + name + ".txt"));
+                u = (user) in.readObject();
+            }
+            finally {
+                in.close();
+                return u;
+            }
         }
 
     }
@@ -527,6 +550,41 @@ public class lab5 {
             this.track = track;
             this.current_position = 1;
             this.last_saved = 0;
+        }
+
+        @Override
+        public String toString() {
+            return "user{" +
+                    "name='" + name + '\'' +
+                    ", track=" + track +
+                    ", current_position=" + current_position +
+                    ", total_moves=" + total_moves +
+                    ", last_saved=" + last_saved +
+                    ", snake_bites=" + snake_bites +
+                    ", vulture_bites=" + vulture_bites +
+                    ", cricket_bites=" + cricket_bites +
+                    ", trampoline=" + trampoline +
+                    '}';
+        }
+
+        public boolean equals(Object o) {
+            if(o==null) { return false; }
+            if(o.getClass() == getClass()) {
+                user u = (user)o;
+                if(u.getName().equals(getName()) &&
+                    u.getCurrent_position()==getCurrent_position() &&
+                    u.getTotal_moves() == getTotal_moves() &&
+                    u.getSnake_bites() == getSnake_bites() &&
+                    u.getCricket_bites() == u.getCricket_bites() &&
+                    u.getTrampoline() == getTrampoline() &&
+                    u.getVulture_bites()==getVulture_bites())
+                {
+                    return true;
+                }
+            }
+            return false;
+
+
         }
 
         public String getName() { return name; }

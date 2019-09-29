@@ -8,7 +8,8 @@ import org.junit.runners.Suite;
         MyTests.testCricket.class,
         MyTests.testVulture.class,
         MyTests.testTrampoline.class,
-        MyTests.testGameWinner.class
+        MyTests.testGameWinner.class,
+        MyTests.testSerialization.class
 })
 
 public class JunitTestSuite { }
