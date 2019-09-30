@@ -133,7 +133,7 @@ public class MyTests {
             u.setCricket_bites(6);
             u.setSnake_bites(0);
             u.setVulture_bites(10);
-            u.setCurrent_position(25);
+            u.setCurrent_position(23);
             u.setTotal_moves(28);
 
             c = new lab5.computer();
@@ -160,10 +160,51 @@ public class MyTests {
             File file = new File("saved_objects/demo_user.txt");
             file.delete();
         }
+    }
+
+    public static class testSavegame_after25perc {
+
+        public static lab5.user u;
+        public static lab5.computer c;
+
+        @Before
+        public void make_user() {
+            u = new lab5.user("demo_user", new lab5.race_track(100));
+            u.setTrampoline(5);
+            u.setCricket_bites(6);
+            u.setSnake_bites(0);
+            u.setVulture_bites(10);
+            u.setCurrent_position(23);
+            u.setTotal_moves(28);
+
+            c = new lab5.computer();
+        }
+
+
+        @Test(timeout = 6000)
+        public void testSerializationAfter25perc() throws IOException {
+
+            c.play(u, false);
+            lab5.user extracted_user = c.deserialize("demo_user");
+            Assert.assertTrue("Deserialized not instance of user",extracted_user instanceof lab5.user);
+            Assert.assertEquals("Both sent and extracted NOT equals",extracted_user, u);
+
+            if(extracted_user.getCurrent_position()>=25 && extracted_user.getCurrent_position()<50) {
+                //Nothing
+            }
+            else {fail("Not saved properly after 25%");}
+        }
+
+        @After
+        public void del_file() {
+            File file = new File("saved_objects/demo_user.txt");
+            file.delete();
+        }
 
 
 
     }
+
 
 }
 

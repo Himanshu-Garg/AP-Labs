@@ -198,7 +198,7 @@ public class lab5 {
             // adding tiles to  "tiles array-list"
             this.tiles = new ArrayList<>();
             for(int i=0;i<total_tiles;i++) {
-                randomInteger = r.nextInt(5);
+                randomInteger = r.nextInt(10);
                 if(randomInteger==0) {
                     tiles.add(w);
                 }
@@ -218,6 +218,7 @@ public class lab5 {
                     tiles.add(cricket_tile);
                     no_of_cricket_tiles++;
                 }
+                else {tiles.add(w);}
             }
         }
 
@@ -309,7 +310,7 @@ public class lab5 {
         }
 
 
-        public void play(user u) throws GameWinnerException {
+        public void play(user u, boolean user_input) throws GameWinnerException {
             int value_on_dice;
             int before_roll_position;
 
@@ -433,51 +434,69 @@ public class lab5 {
 
                     if(before_roll_position<seventy_five_perc
                             && u.getCurrent_position()>=seventy_five_perc) {
-                        save_user_menu(u);
+                        save_user_menu(u,user_input);
+                        if(!user_input) {break;}
                     }
                     else if(before_roll_position<fifty_perc
                             && u.getCurrent_position()>=fifty_perc) {
-                        save_user_menu(u);
+                        save_user_menu(u,user_input);
+                        if(!user_input) {break;}
                     }
                     else if(before_roll_position<twenty_five_perc
                             && u.getCurrent_position()>=twenty_five_perc) {
-                        save_user_menu(u);
+                        save_user_menu(u,user_input);
+                        if(!user_input) {break;}
                     }
                     // displaying menu ends --------------
                 }
             }
         }
 
-        private void save_user_menu(user u) {
-            System.out.println("choose one of the following option...");
-            System.out.println("1) SAVE");
-            System.out.println("2) Continue");
+        public void save_user_menu(user u, boolean user_input) {
 
-            // to take input from user...
-            int in = 0;
-            while (true) {
-                try {
-                    System.out.println("Please enter 1 or 2 ONLY!!!");
-                    Scanner s = new Scanner(System.in);
-                    in = s.nextInt();
-                    if(in==1 || in==2) { break; }
+            if(user_input == true) {
+
+                System.out.println("choose one of the following option...");
+                System.out.println("1) SAVE");
+                System.out.println("2) Continue");
+
+                // to take input from user...
+                int in = 0;
+                while (true) {
+                    try {
+                        System.out.println("Please enter 1 or 2 ONLY!!!");
+                        Scanner s = new Scanner(System.in);
+                        in = s.nextInt();
+                        if(in==1 || in==2) { break; }
+                    }
+                    catch (InputMismatchException e){
+                        System.out.println("Wrong Input type...(only INTEGER allowed (1 and 2))");
+                        System.out.println("Try again");
+                    }
                 }
-                catch (InputMismatchException e){
-                    System.out.println("Wrong Input type...(only INTEGER allowed (1 and 2))");
-                    System.out.println("Try again");
+
+                if(in==1) {
+                    try {
+                        serialize(u);
+                        System.exit(0);
+                    }
+                    catch (Exception e) {
+                        System.out.println("Cannot save game (DUE to some error)");
+                        System.out.println(e.getMessage());
+                    }
                 }
             }
 
-            if(in==1) {
+            else {
                 try {
                     serialize(u);
-                    System.exit(0);
                 }
                 catch (Exception e) {
                     System.out.println("Cannot save game (DUE to some error)");
                     System.out.println(e.getMessage());
                 }
             }
+
 
 
 
@@ -649,7 +668,7 @@ public class lab5 {
         public void Game_start(computer c) {
             try {
                 System.out.println("Game started ==============================>");
-                c.play(this);
+                c.play(this, true);
             }
             catch (GameWinnerException e) {
                 print_final_data();

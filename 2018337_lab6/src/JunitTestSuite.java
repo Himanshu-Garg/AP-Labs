@@ -9,7 +9,8 @@ import org.junit.runners.Suite;
         MyTests.testVulture.class,
         MyTests.testTrampoline.class,
         MyTests.testGameWinner.class,
-        MyTests.testSerialization.class
+        MyTests.testSerialization.class,
+        MyTests.testSavegame_after25perc.class,
 })
 
 public class JunitTestSuite { }
