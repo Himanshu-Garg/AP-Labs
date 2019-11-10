@@ -5,6 +5,8 @@ public class lab7 {
 
     interface Subject {
         public void user_interface();
+        public void exit();
+
     }
 
     interface Observer {
@@ -58,14 +60,11 @@ public class lab7 {
 
             while(!terminate) {
                 int n = tp.remove();
-                if(n==-1) {
-                    try {Thread.sleep((int)Math.random()*1000);}
-                    catch (InterruptedException e) {}
-                }
-                else {
-                    // here fibonacci of that no will be found
 
-                    // System.nanoTime() gives the current time in the system...
+                // here fibonacci of that no will be found
+
+                // System.nanoTime() gives the current time in the system...
+                if(!terminate){
                     long start_time = System.nanoTime();
                     fibonacci f = fibonacci.getInstance(n);
                     long end_time = System.nanoTime();
@@ -79,6 +78,8 @@ public class lab7 {
             r.add(f, time);
         }
     }
+
+
 
     public static class results_pool {
         private volatile Queue<fibonacci> result;
@@ -95,6 +96,7 @@ public class lab7 {
         }
 
         public synchronized void display() {
+            System.out.println("-------------- Result --------------");
             Iterator i1 = result.iterator();
             Iterator i2 = time.iterator();
 
@@ -110,9 +112,11 @@ public class lab7 {
 
     public static class task_pool {
         private volatile Queue<Integer> q;
+        private boolean terminate;
 
         task_pool() {
             q = new LinkedList<>();
+            this.terminate = false;
         }
 
         public synchronized int getSize() {
@@ -121,11 +125,21 @@ public class lab7 {
 
         public synchronized void add(int n) {
             q.add(n);
+            notifyAll();
         }
 
         public synchronized int remove() {
-            if(q.size()==0) {return -1;}
-            else {return q.remove();}
+            while(q.size()==0 && !terminate) {
+                try { wait(); }
+                catch (InterruptedException e) {System.out.println("Stop interrupting...");}
+            }
+            if(terminate) {return 0;}
+            return q.remove();
+        }
+
+        public synchronized void terminate() {
+            notifyAll();
+            terminate = true;
         }
 
 
@@ -164,6 +178,7 @@ public class lab7 {
 
         public int getNo_of_consumer_threads() { return no_of_consumer_threads; }
 
+        @Override
         public void user_interface() {
             System.out.println("Rules ------>");
             System.out.println(" -1 = display computer results");
@@ -184,14 +199,15 @@ public class lab7 {
                 }
                 else if (input>=1 && input<=45) {
                     tp.add(input);
-                    //notifyAll();
+
                 }
                 else {System.out.println("Invalid input...");}
 
             }
         }
 
-        private void exit() {
+        @Override
+        public void exit() {
             while(true) {
                 if(tp.getSize()!=0) {
                     try {Thread.sleep(2000);}
@@ -200,7 +216,10 @@ public class lab7 {
                 else {
                     for(consumer c: consumers) { c.setTerminate(true); }
                     for(Thread t: consumers_threads) {
-                        try { t.join(); }
+                        try {
+                            tp.terminate();
+                            t.join();
+                        }
                         catch (InterruptedException e) {System.out.println("Stop interrupting");}
                     }
 
